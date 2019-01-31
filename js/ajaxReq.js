@@ -14,6 +14,7 @@ $.ajax({
     console.log(employeesData.filled);//check2
 
     //load employees
+    //the Gallery
     data.results.forEach(employee => {
       const name = employee.name.first + " " + employee.name.last;
       const email = employee.email;
