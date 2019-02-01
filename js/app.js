@@ -1,6 +1,8 @@
 //employeesData{employees[12objects],filled:true}
+//makeCards(emps);
 //location,name,picture,email,phone,dob
 //DOMS////////////////////////////////////
+//$gallery
 const $card = $('.card');
 const $modalContainer = $('<div class="modal-container"></div>');
 const $modal = $('<div class="modal">');
@@ -46,26 +48,48 @@ let empInView = {};
 let searchedEmps = employeesData.employees;
 
 //EVENT LISTENERS/////////////////////////
-$card.on('click',function(e){
-  let employee =
-  employeesData.employees.filter(employee => {
-    if(employee.email == findEmail(this)){
-      return employee;
-    }
-  })[0];
-  empInView = employee;
-  makeModal(employee);
-});
 $submit.on('click',function(e){
   e.preventDefault();
-  
+  searchedEmps = employeesData.employees.filter(emp => {
+    let empName = emp.name.first + ' ' + emp.name.last;
+    if(empName.includes($searchInput.val())){
+      return emp;
+    }
+  });
+  $searchInput.val("");
+  makeCards(searchedEmps);
 })
+
+$gallery.on('click',function(e){
+  if(findCard(e.target) != null){
+    let employee =
+    searchedEmps.filter(employee => {
+      if(employee.email == findEmail(findCard(e.target))){
+        return employee;
+      }
+    })[0];
+    empInView = searchedEmps.indexOf(employee);
+    makeModal(employee);
+    findCard(e.target);
+  }
+});
+
 $modalprev.on('click',function(){
-
+  empInView--;
+  if(empInView <= 0){
+    empInView = 0;
+  }
+  makeModal(searchedEmps[empInView]);
 });
+
 $modalNext.on('click',function(){
-
+  empInView++;
+  if(empInView >= searchedEmps.length - 1){
+    empInView = searchedEmps.length - 1;
+  }
+  makeModal(searchedEmps[empInView]);
 });
+
 $close.on('click',function(){
   $modalContainer.hide();
 });
@@ -84,5 +108,21 @@ const makeModal = employee => {
 }
 
 const findEmail = element =>{
-  return element.children[1].children[1].innerText;
+  if(element != null){
+    return element.children[1].children[1].innerText;
+  }else return null;
+}
+const findCard = element => {
+  if(element.className == "card"){
+    return element;
+  }else if(element.className == "card-img-container" ||
+  element.className == "card-info-container"){
+    return element.parentNode;
+  }else if(element.tagName == "IMG" ||
+  element.tagName == "P" ||
+  element.tagName == "H3"){
+    return element.parentNode.parentNode;
+  }else{
+    return null;
+  }
 }
