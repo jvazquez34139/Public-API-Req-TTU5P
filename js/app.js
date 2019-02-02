@@ -102,6 +102,7 @@ const makeModal = employee => {
   $city.text(employee.location.city);
   $phone.text(employee.phone);
   $location.text(employee.location.street + ', '
+                + employee.location.city + ', '
                 + employee.location.postcode);
   $dob.text("Birthday: " + employee.dob.date.substring(0,10));
   $modalContainer.show();
